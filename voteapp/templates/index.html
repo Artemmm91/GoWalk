@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    {# Load the tag library #}
+    {% load bootstrap4 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    <title>GoWalk</title>
+    <style>
+	@font-face {
+        font-family: Montserrat;
+        src: url(../static/fonts/MontserratAlternates-Light.ttf);
+    }
+	body {
+		background: url(../static/background/Bgm.png);
+		background-size: 100%;
+		color: #FFFFFF;
+        font-family: Montserrat;
+	}
+	</style>
+</head>
+
+<body>
+{% include "menu.html" %}
+    <div style="text-align: center; margin-top: 33%">
+        <a href="/top/" class="btn btn btn-lg" style="background-color: #f8c68a; color: black" >Найти прогулку</a>
+    </div>
+</body>
+
+</html>

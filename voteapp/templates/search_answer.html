@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% load bootstrap4 %}
+
+<h1>Результаты по запросу {{search}}:</h1>
+<div class="list-group">
+    {% if suitable_pools %}
+    {% for id, desc in suitable_pools %}
+    <a class="list-group-item list-group-item-action" href="/show/{{id}}">{{desc}}</a>
+    {% endfor %}
+    {% else %}
+    <p>Не найдено</p>
+    {% endif%}
+</div>
+
+{% endblock %}

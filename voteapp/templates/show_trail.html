@@ -1,0 +1,94 @@
+{% extends "base_show.html" %}
+{% block content %}
+{% load bootstrap4 %}
+
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card" style="width=100%">
+            <div class="card-body">
+                {% if error %}
+                <h2>Ой, прогулка #{{ poll.id }} не найдена</h2>
+                {% else %}
+                <b><h3 class="card-title">{{ poll.name }}</h3>
+                    <p class="card-subtitle mb-2 text-muted">Предложено: {{ poll.user }}</p></b>
+                <p>Описание: {{ poll.text }}</p>
+                <p>Рейтинг: {{ like }}%, проголосовано {{ number_votes }} пользователями</p>
+                <input type=button value="Назад" class="btn btn-primary" onClick="history.go(-1);">
+            </div>
+        </div>
+        <br>
+        <div class="card" style="width=100%">
+            <div class="card-body">
+                <form action="{% url 'vote' poll.id %}" method="post" class="form-group">
+                    {% csrf_token %}
+                    {% if is_voted %}
+                        {% for option in options %}
+                            <p style="margin: 5px"> {{ option.0.text }}</p>
+                            <div style="background-color: #ECEEEF; height: 15px; border-radius: 2px">
+                                <div style="background-color: #007BFF; border-radius: 2px; height: 100%; width: {{ option.1 }}%; text-align: center; line-height: 100%; color:#FFF">
+                                    {% if option.1 %}
+                                    {{  option.1 }}%
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        {% for option in options %}
+                            <input type="radio" name="option" id="option{{ forloop.counter }}" value="{{ option.id }}"/>
+                            <label for="option{{ forloop.counter }}">{{ option.text }} </label><br/>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div style="margin-top: 10px">
+                        {% if request.user != poll.user and not is_voted %}
+                            <input type="submit" class="btn btn-primary" value="Проголосовать"/>
+                        {% endif %}
+                        {%  if request.user == poll.user or request.user.is_superuser %}
+                            <a class="btn btn-primary" href="/delete/{{poll.id}}">Удалить</a>
+                        {% endif %}
+                    </div>
+                    <br>
+                </form>
+                {% endif %}
+                <form method="post" style="margin-bottom: 10px">
+                    {% csrf_token %}
+                    {% bootstrap_form add_form %}
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="container">
+            <div class="row mapp">
+                <iframe src="{{ poll.link }}" width="100%" height="450" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="row">
+                <div class="list-group" style="width% 100%; text-align: center">
+                    {% if comments %}
+                    {% for user, text, datetime in comments %}
+                    <div class="alert alert-success" role="alert" style="background-color: #ECEEEF; border-color: #ECEEEF; width: 112%; border-radius: 10px; text-align: center">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <h5 class="alert-heading">{{user}}</h5>
+                                    <p>{{text}}</p>
+                                </div>
+                                <div class="col-sm ">
+                                    <em class="text-right">{{datetime}}</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p>Нет комментариев</p>
+                    {% endif%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
