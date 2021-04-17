@@ -1,4 +1,4 @@
-"""votings URL Configuration
+"""setters URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from votings import settings
+from setters import settings
 
 
 from walkapp import views

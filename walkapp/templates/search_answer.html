@@ -4,7 +4,7 @@
 
 <h1>Результаты по запросу {{search}}:</h1>
 <div class="list-group">
-    {% if suitable_pools %}
+    {% if suitable_walks %}
     {% for id, desc in suitable_walks %}
     <a class="list-group-item list-group-item-action" href="/show/{{id}}">{{desc}}</a>
     {% endfor %}
