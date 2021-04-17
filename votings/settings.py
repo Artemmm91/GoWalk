@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MEDIA_DIR = os.path.join(BASE_DIR, 'voteapp/media')
+MEDIA_DIR = os.path.join(BASE_DIR, 'walkapp/media')
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'voteapp',
+    'walkapp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'voteapp/templates',
+            'walkapp/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -126,4 +126,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'testingvotings@gmail.com'
-EMAIL_HOST_PASSWORD = 'wH53Kloyx'
+EMAIL_HOST_PASSWORD = 'qlwyblqkhwel941928094'

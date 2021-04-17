@@ -17,29 +17,26 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from votings import settings
-from django.conf.urls import url
-from django.conf.urls import include
-from django.views.static import serve
 
 
-from voteapp import views
+from walkapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('add/', views.add_voting, name='add_voting'),
+    path('add/', views.add_walk, name='add_walk'),
     path('top/', views.top, name='top'),
     path('random/', views.rand_shuffle, name='random'),
-    path('show/<int:poll_id>/', views.show_voting, name='show_trail'),
+    path('show/<int:walk_id>/', views.show_walk, name='show_trail'),
     path('signin/', views.login_view, name='signin'),
     path('signout/', views.logout_view, name='signout'),
     path('profile/', views.user_profile, name='user_profile'),
     path('signup/', views.add_user, name='signup'),
-    path('vote/<int:poll_id>/', views.vote, name='vote'),
+    path('vote/<int:walk_id>/', views.vote, name='vote'),
     path('search_answer/', views.show_answer, name='search_answer'),
     path('profile/new_pass/', views.change_password, name='change_password'),
     path('signin/res_pass/', views.reset_password, name='reset_password'),
-    path('delete/<int:poll_id>/', views.delete_poll, name='delete'),
+    path('delete/<int:walk_id>/', views.delete_walk, name='delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #if settings.DEBUG:
