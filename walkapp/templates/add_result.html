@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+{% load bootstrap4 %}
+
+<h1 class="text">Добавить новый маршрут</h1>
+{% if not errors %}
+    <h1 class="text">Добавлен <a href="/show/{{id}}">маршрут</a></h1>
+{% else %}
+    <h1 class="text">Что-то пошло не так</h1>
+    Детали: {{ errors }}
+{% endif %}
+
+{% endblock %}
