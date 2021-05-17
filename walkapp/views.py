@@ -1,6 +1,6 @@
 from string import ascii_letters, digits
 from math import ceil
-from random import random
+import random
 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.core.mail import send_mail
@@ -17,10 +17,6 @@ def by_rate_key(walk):
     return walk[4]
 
 
-def random_order_key(element):
-    return random()
-
-
 def index(request):
     return render(request, 'index.html', {})
 
@@ -31,10 +27,8 @@ def make_link(link):
     if link.startswith("<iframe"):
         start_link = link.find("src") + 5
         new_link = ""
-        for i in range(start_link, len(link)):
-            if i == "\"":
-                break
-            new_link += link[i]
+        j = link.find("\"", start_link)
+        new_link += link[start_link:j]
         return new_link
     return link
 
@@ -43,7 +37,7 @@ def rand_shuffle(request):
     context = {}
     this_walks = Walk.objects.filter(is_deleted=False, is_active=True)
     context['walks'] = [(item.id, item.name, item.text[:34]+'...', item.user) for item in this_walks]
-    context['walks'] = sorted(context['walks'], key=random_order_key)
+    random.shuffle(context['walks'])
     return render(request, 'random.html', context)
 
 
@@ -61,13 +55,13 @@ def add_walk(request):
     if request.POST:
         form = AddWalkForm(request.POST)
         if form.is_valid():
-            p = Walk(name=form.data['name'], text=form.data['text'], user=request.user,
+            new_walk = Walk(name=form.data['name'], text=form.data['text'], user=request.user,
                      link=make_link(form.data['link']), is_active=True)
-            p.save()
-            context['id'] = p.id
-            opt_like = Option(text='Like', voting=p)
+            new_walk.save()
+            context['id'] = new_walk.id
+            opt_like = Option(text='Like', voting=new_walk)
             opt_like.save()
-            opt_dislike = Option(text='Dislike', voting=p)
+            opt_dislike = Option(text='Dislike', voting=new_walk)
             opt_dislike.save()
         else:
             context['errors'] = form.errors
@@ -198,13 +192,13 @@ def reset_password(request):
         form = RecoverForm(request.POST)
         if form.is_valid():
             name = form.data['username']
-            u = User.objects.filter(username=name).first()
-            if u is not None:
+            this_user = User.objects.filter(username=name).first()
+            if this_user is not None:
                 new_password = User.objects.make_random_password(length=10, allowed_chars=ascii_letters + digits)
-                u.set_password(new_password)
-                u.save()
+                this_user.set_password(new_password)
+                this_user.save()
                 message = 'Hi! Your new password is: ' + new_password
-                mail = u.email
+                mail = this_user.email
                 print(message)
                 send_mail('New Password', message, 'from@example.com', [mail])
                 return redirect(index)
@@ -236,7 +230,6 @@ def user_profile(request):
 def all_are_in(tags, walk):
     for tag in tags:
         suitable_to_cur = Walk.objects.filter(tag=tag)
-        print("---", suitable_to_cur, "---", end='\n')
         if walk not in suitable_to_cur or not tags:
             return False
     return True
@@ -245,17 +238,18 @@ def all_are_in(tags, walk):
 def show_answer(request):
     context = {}
     all_walks = Walk.objects.filter(is_active=True, is_deleted=False)
-    s = request.GET['quest']
-    a = s.split('#')
-    text = a[1:]
-    if len(a) > 1:
-        a[0] = a[0][:a[0].find(' ')]
+    this_request = request.GET['quest']
+    splitted_request = this_request.split('#')
+    text = splitted_request[1:]
+    if len(splitted_request) > 1:
+        splitted_request[0] = splitted_request[0][:splitted_request[0].find(' ')]
     written_tags = Tag.objects.filter(text__in=text)
-    context['search'] = s
+    context['search'] = this_request
     context['suitable_walks'] = []
     for item in all_walks:
-        if (a[0] in item.user.username or a[0] in item.name or a[0] in item.text) \
-                and (all_are_in(written_tags, item)) and a[0]:
+        if (splitted_request[0] in item.user.username or
+            splitted_request[0] in item.name or splitted_request[0] in item.text) \
+                and (all_are_in(written_tags, item)) and splitted_request[0]:
             context['suitable_walks'].append((item.id, item.name))
     return render(request, 'search_answer.html', context)
 
@@ -270,8 +264,7 @@ def vote(request, walk_id):
             this_vote.save()
             all_votes = Vote.objects.filter(walk=walk).count()
             if option.text == 'Like':
-                result = Vote.objects.filter(option=option).count() / float(all_votes)
-                result *= 100
+                result = Vote.objects.filter(option=option).count() / float(all_votes) * 100
                 result = int(ceil(result)) if result / 1 >= 0.5 else int(result)
                 walk.rate = result
                 walk.save()
